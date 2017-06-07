@@ -1,0 +1,71 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/app-layout/app-layout.html">
+<link rel="import" href="/bower_components/iron-image/iron-image.html">
+
+<dom-module id="flag-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        font-family: Roboto, Noto, sans-serif;
+      }
+      app-toolbar {
+        background-color: #4285f4;
+        color: #fff;
+        margin: 20px 0;
+      }
+    </style>
+    <app-header>
+      <app-toolbar>
+        <div main-title>Whose flag is this?</div>
+      </app-toolbar>
+    </app-header>
+    <iron-image 
+      style="width:720px; height:504px; background-color: lightgray;" 
+      sizing="cover" 
+      preload fade src="flag-images/{{countryImage}}.svg">
+    </iron-image>
+    <!-- we're in polymer land so we can use the
+    declarative listeners with the dash -->
+    <p>
+    <button id="{{country1}}" on-click="selectAnswer">{{country1}}</button>
+    <button id="{{country2}}" on-click="selectAnswer">{{country2}}</button>
+    <p name="para">You chose: {{prop1}}</p>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class FlagApp extends Polymer.Element {
+      static get is() { return 'flag-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: "Fuck this"
+          },
+          country1: {
+            type: String,
+            value: "Brazil"
+          },
+          country2: {
+            type: String,
+            value: "Uruguay"
+          },
+          countryImage: {
+            type: String,
+            value: "BR"
+          }
+        };
+      }
+      selectAnswer() {
+        this.prop1 = event.target.id; // which button was clicked
+      }
+    }
+
+    window.customElements.define(FlagApp.is, FlagApp);
+    
+  </script>
+</dom-module>
