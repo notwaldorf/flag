@@ -23,48 +23,86 @@
     <iron-image 
       style="width:720px; height:504px; background-color: lightgray;" 
       sizing="cover" 
-      preload fade src="flag-images/{{countryImage}}.svg">
+      preload fade src="flag-data/svg/{{countryImage}}.svg">
     </iron-image>
     <!-- we're in polymer land so we can use the
     declarative listeners with the dash -->
     <p>
-    <button id="{{country1}}" on-click="selectAnswer">{{country1}}</button>
-    <button id="{{country2}}" on-click="selectAnswer">{{country2}}</button>
-    <p name="para">You chose: {{prop1}}</p>
+    <button id="{{countryA}}" on-click="selectAnswer">{{countryA}}</button>
+    <button id="{{countryB}}" on-click="selectAnswer">{{countryB}}</button>
+    <p name="para">You chose: {{userAnswer}}</p>
+    <p>{{outputMessage}}</p>
   </template>
 
   <script>
-    /**
-     * @customElement
-     * @polymer
-     */
     class FlagApp extends Polymer.Element {
       static get is() { return 'flag-app'; }
       static get properties() {
         return {
-          prop1: {
+          outputMessage: {
             type: String,
-            value: "Fuck this"
+            value: ""
           },
-          country1: {
+          userAnswer: {
+            type: String,
+            value: ""
+          },
+          countryA: {
             type: String,
             value: "Brazil"
           },
-          country2: {
+          countryB: {
             type: String,
             value: "Uruguay"
           },
           countryImage: {
             type: String,
             value: "BR"
+          },
+          correctAnswer: {
+            type: String,
+            value: "Brazil"
           }
-        };
+        }
       }
       selectAnswer() {
-        this.prop1 = event.target.id; // which button was clicked
+        console.log(event.target.id);
+        this.userAnswer = event.target.id; // which button was clicked
+        if (this.userAnswer == this.correctAnswer) 
+        {
+          this.outputMessage = this.userAnswer + " is correct!";
+        }
+        else
+        {
+          this.outputMessage = "Nope! The correct answer is " + this.correctAnswer + "!";
+        }
       }
-    }
+      
+      /*  
+       *  Planned methods 
+       *  
+       
+      
+      readCountries() {
+        Create this data structure: countryList[{code: String, name: String},{code: String, name: String},...]
+        Load the contents of country-codes.json into countryList[]
+      }
+      
+      pickCountries() {
+        Choose 2 random numbers, A and B, between 1 and the length of countryList
+        Load countryList[A] and countryList[B] into countryA and countryB
+        this.correctAnswer = (randomly choose between countryA and countryB)
+        this.countryImage = correctAnswer.code;
 
+      }
+      
+      displayFlag(country) {
+         
+         this.countryImage 
+      }  
+        
+       */
+    }
     window.customElements.define(FlagApp.is, FlagApp);
     
   </script>
