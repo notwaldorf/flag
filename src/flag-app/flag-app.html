@@ -15,6 +15,9 @@
         color: #fff;
         margin: 20px 0;
       }
+      iron-image {
+        border-style: solid;
+      }
     </style>
     <app-header>
       <app-toolbar>
@@ -25,19 +28,17 @@
             auto
             url="flag-data/countrycodes.json"
             handle-as="json"
-            last-response="{{jsondata}}"></iron-ajax>
-    <div>Here's the country I chose: [[arrayItem(jsondata.countrycodes.*, n, "name")]]</div>
-    
+            on-response="handleresponse"></iron-ajax>
     <iron-image 
-      style="width:720px; height:504px; background-color: lightgray;" 
+      style="width:900px; height:504px; background-color: lightgray;" 
       sizing="cover" 
-      preload fade src="flag-data/svg/[[arrayItem(jsondata.countrycodes.*, n, 'code')]].svg">
+      preload fade src="flag-data/svg/{{correctAnswer.code}}.svg">
     </iron-image>
     <!-- we're in polymer land so we can use the
     declarative listeners with the dash -->
     <p>
-    <button id="{{countryA}}" on-click="selectAnswer">{{countryA}}</button>
-    <button id="{{countryB}}" on-click="selectAnswer">{{countryB}}</button>
+    <button id="{{countryA.name}}" on-click="selectAnswer">{{countryA.name}}</button>
+    <button id="{{countryB.name}}" on-click="selectAnswer">{{countryB.name}}</button>
     <p name="para">You chose: {{userAnswer}}</p>
     <p>{{outputMessage}}</p>
   </template>
@@ -52,28 +53,23 @@
             value: ""
           },
           userAnswer: {
-            type: String,
-            value: ""
           },
           countryA: {
-            type: String,
-            value: ""
           },
           countryB: {
-            type: String,
-            value: ""
           },
           countryImage: {
             type: String,
             value: "BR"
           },
           correctAnswer: {
-            type: String,
-            value: "Brazil"
           },
           n: {
             type: Number,
             value: Math.floor((Math.random() * 248) + 1)
+          },
+          countryList: {
+            
           }
         }
       }
@@ -81,53 +77,30 @@
       selectAnswer() {
         console.log(event.target.id);
         this.userAnswer = event.target.id; // which button was clicked
-        if (this.userAnswer == this.correctAnswer) 
+        if (this.userAnswer == this.correctAnswer.name) 
         {
           this.outputMessage = this.userAnswer + " is correct!";
         }
         else
         {
-          this.outputMessage = "Nope! The correct answer is " + this.correctAnswer + "!";
+          this.outputMessage = "Nope! The correct answer is " + this.correctAnswer.name + "!";
         }
       }
+      handleresponse(thing) {
+        console.log(thing.detail.response.countrycodes);
+        this.countryList = thing.detail.response.countrycodes;
+        this.countryA = this.countryList[(Math.floor((Math.random() * 248) + 1))];
+        this.countryB = this.countryList[(Math.floor((Math.random() * 248) + 1))];
+        this.correctAnswer = this.countryA;
+      }
       arrayItem(change, index, path) {
-             // this.get(path, root) returns a value for a path
-             // relative to a root object.
-             if (change.base)
-             {
-               console.log(change.base.length);
-               return this.get(path, change.base[index]);
-             }
-           }
-      
-      /*  
-       *  Planned methods 
-       *  
-      getCountryCode(jsondata, n)
-      {
-        return this.get(path, change.base[index]);
+        // this.get(path, root) returns a value for a path
+        // relative to a root object.
+        if (change.base)
+        {
+          return this.get(path, change.base[index]);
+        }
       }
-      
-      [[_getCountryCode(jsondata, n)]]
-      readCountries() {
-        Create this data structure: countryList[{code: String, name: String},{code: String, name: String},...]
-        Load the contents of country-codes.json into countryList[]
-      }
-      
-      pickCountries() {
-        Choose 2 random numbers, A and B, between 1 and the length of countryList
-        Load countryList[A] and countryList[B] into countryA and countryB
-        this.correctAnswer = (randomly choose between countryA and countryB)
-        this.countryImage = correctAnswer.code;
-
-      }
-      
-      displayFlag(country) {
-         
-         this.countryImage 
-      }  
-        
-       */
     }
     window.customElements.define(FlagApp.is, FlagApp);
     
