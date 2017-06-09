@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/app-layout/app-layout.html">
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="flag-app">
   <template>
@@ -20,10 +21,17 @@
         <div main-title>Whose flag is this?</div>
       </app-toolbar>
     </app-header>
+    <iron-ajax
+            auto
+            url="flag-data/countrycodes.json"
+            handle-as="json"
+            last-response="{{jsondata}}"></iron-ajax>
+    <div>Here's the country I chose: [[arrayItem(jsondata.countrycodes.*, n, "name")]]</div>
+    
     <iron-image 
       style="width:720px; height:504px; background-color: lightgray;" 
       sizing="cover" 
-      preload fade src="flag-data/svg/{{countryImage}}.svg">
+      preload fade src="flag-data/svg/[[arrayItem(jsondata.countrycodes.*, n, 'code')]].svg">
     </iron-image>
     <!-- we're in polymer land so we can use the
     declarative listeners with the dash -->
@@ -49,11 +57,11 @@
           },
           countryA: {
             type: String,
-            value: "Brazil"
+            value: ""
           },
           countryB: {
             type: String,
-            value: "Uruguay"
+            value: ""
           },
           countryImage: {
             type: String,
@@ -62,9 +70,14 @@
           correctAnswer: {
             type: String,
             value: "Brazil"
+          },
+          n: {
+            type: Number,
+            value: Math.floor((Math.random() * 248) + 1)
           }
         }
       }
+      
       selectAnswer() {
         console.log(event.target.id);
         this.userAnswer = event.target.id; // which button was clicked
@@ -77,12 +90,25 @@
           this.outputMessage = "Nope! The correct answer is " + this.correctAnswer + "!";
         }
       }
+      arrayItem(change, index, path) {
+             // this.get(path, root) returns a value for a path
+             // relative to a root object.
+             if (change.base)
+             {
+               console.log(change.base.length);
+               return this.get(path, change.base[index]);
+             }
+           }
       
       /*  
        *  Planned methods 
        *  
-       
+      getCountryCode(jsondata, n)
+      {
+        return this.get(path, change.base[index]);
+      }
       
+      [[_getCountryCode(jsondata, n)]]
       readCountries() {
         Create this data structure: countryList[{code: String, name: String},{code: String, name: String},...]
         Load the contents of country-codes.json into countryList[]

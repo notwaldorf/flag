@@ -1,4 +1,4 @@
-"countrycodes":[
+{ "countrycodes":[
 { 
   "code": "AF",
   "name": "Afghanistan"
@@ -991,4 +991,4 @@
   "code": "ZW",
   "name": "Zimbabwe" 
 }
-]
+]}
