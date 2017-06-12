@@ -3,7 +3,6 @@
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-styles/color.html">
 
 <dom-module id="flag-app">
   <template>
@@ -91,27 +90,20 @@
           },
           countryB: {
           },
-          countryImage: {
-            type: String,
-            value: "BR"
-          },
           correctAnswer: {
           },
-          n: {
-            type: Number,
-            value: Math.floor((Math.random() * 248) + 1)
-          },
           countryList: {
-            
           },
-          coin: {type:Number, value:0}
+          coin: {
+            type:Number,
+            value:0
+          }
         }
       }
       
       selectAnswer(event) {
-        var el = event.target;
-        console.log(el);
-        this.userAnswer = el.dataset.answer; 
+        var clickedButton = event.target;
+        this.userAnswer = clickedButton.dataset.answer; 
         
         if (this.userAnswer == this.correctAnswer.name) 
         {
@@ -128,7 +120,6 @@
         this.countryA = this.countryList[(Math.floor((Math.random() * 248) + 1))];
         this.countryB = this.countryList[(Math.floor((Math.random() * 248) + 1))];
         this.coin=(Math.floor((Math.random() * 2) + 1));
-        console.log(this.coin);
         if (this.coin == 1) 
           { this.correctAnswer = this.countryA; }
         if (this.coin == 2) 
