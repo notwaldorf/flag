@@ -2,10 +2,31 @@
 <link rel="import" href="/bower_components/app-layout/app-layout.html">
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-styles/color.html">
 
 <dom-module id="flag-app">
   <template>
     <style>
+      paper-button.another {
+        background: #4285f4;
+        color: #fff;
+        width: 100%;
+      }
+      paper-button {
+        background: #5e35b1;
+        color: #fff;
+        width: 47%;
+      }
+      
+      paper-button:hover {
+        background: lime;
+      }
+
+      paper-button[disabled],
+      paper-button[toggles][active] {
+        background: red;
+      }
       :host {
         display: block;
         font-family: Roboto, Noto, sans-serif;
@@ -16,9 +37,20 @@
         margin: 20px 0;
       }
       iron-image {
-        border-style: solid;
+        border: solid;
       }
     </style>
+    <custom-style>
+      <style is="custom-style">
+        #example-full-width-container {
+          width: 500px;
+        }
+        #example-full-width {
+          width: 100%;
+          --iron-image-width: 100%;
+        }
+        </style>
+    </custom-style>
     <app-header>
       <app-toolbar>
         <div main-title>Whose flag is this?</div>
@@ -29,18 +61,19 @@
             url="flag-data/countrycodes.json"
             handle-as="json"
             on-response="handleresponse"></iron-ajax>
+    <div id="example-full-width-container">
     <iron-image 
-      style="width:900px; height:504px; background-color: lightgray;" 
-      sizing="cover" 
+      id="example-full-width"      
       preload fade src="flag-data/svg/{{correctAnswer.code}}.svg">
     </iron-image>
-    <!-- we're in polymer land so we can use the
-    declarative listeners with the dash -->
     <p>
-    <button id="{{countryA.name}}" on-click="selectAnswer">{{countryA.name}}</button>
-    <button id="{{countryB.name}}" on-click="selectAnswer">{{countryB.name}}</button>
-    <p name="para">You chose: {{userAnswer}}</p>
-    <p>{{outputMessage}}</p>
+      <paper-button id="optionA" data-answer="{{countryA.name}}" on-click="selectAnswer">{{countryA.name}}</paper-button>
+      <paper-button id="optionB" data-answer="{{countryB.name}}" on-click="selectAnswer">{{countryB.name}}</paper-button>
+      <p>{{outputMessage}}</p>
+      <p><p>
+      <paper-button class="another" id="another" onClick="window.location.reload();">Another!</paper-button>
+       
+    </div>
   </template>
 
   <script>
@@ -70,13 +103,17 @@
           },
           countryList: {
             
-          }
+          },
+          coin: {type:Number, value:0}
         }
       }
       
       selectAnswer() {
-        console.log(event.target.id);
-        this.userAnswer = event.target.id; // which button was clicked
+        var el = document.querySelector('#' + event.target.id);
+        console.log(el);
+        console.log('#' + event.target.id);
+        this.userAnswer = el.dataset.data-answer; 
+        
         if (this.userAnswer == this.correctAnswer.name) 
         {
           this.outputMessage = this.userAnswer + " is correct!";
@@ -85,13 +122,18 @@
         {
           this.outputMessage = "Nope! The correct answer is " + this.correctAnswer.name + "!";
         }
+        
       }
       handleresponse(thing) {
-        console.log(thing.detail.response.countrycodes);
         this.countryList = thing.detail.response.countrycodes;
         this.countryA = this.countryList[(Math.floor((Math.random() * 248) + 1))];
         this.countryB = this.countryList[(Math.floor((Math.random() * 248) + 1))];
-        this.correctAnswer = this.countryA;
+        this.coin=(Math.floor((Math.random() * 2) + 1));
+        console.log(this.coin);
+        if (this.coin == 1) 
+          { this.correctAnswer = this.countryA; }
+        if (this.coin == 2) 
+          { this.correctAnswer = this.countryB; }
       }
       arrayItem(change, index, path) {
         // this.get(path, root) returns a value for a path
