@@ -8,5 +8,8 @@
     "flag-data/*",
     "flag-data/svg/*"
     
-  ]
+  ],
+  "builds": [{
+    "preset": "es6-unbundled"
+  }]
 }

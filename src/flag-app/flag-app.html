@@ -67,8 +67,8 @@
       preload fade src="flag-data/svg/{{correctAnswer.code}}.svg">
     </iron-image>
     <p>
-      <paper-button id="optionA" data-answer="{{countryA.name}}" on-click="selectAnswer">{{countryA.name}}</paper-button>
-      <paper-button id="optionB" data-answer="{{countryB.name}}" on-click="selectAnswer">{{countryB.name}}</paper-button>
+      <paper-button id="optionA" data-answer$="{{countryA.name}}" on-click="selectAnswer">{{countryA.name}}</paper-button>
+      <paper-button id="optionB" data-answer$="{{countryB.name}}" on-click="selectAnswer">{{countryB.name}}</paper-button>
       <p>{{outputMessage}}</p>
       <p><p>
       <paper-button class="another" id="another" onClick="window.location.reload();">Another!</paper-button>
@@ -108,11 +108,10 @@
         }
       }
       
-      selectAnswer() {
-        var el = document.querySelector('#' + event.target.id);
+      selectAnswer(event) {
+        var el = event.target;
         console.log(el);
-        console.log('#' + event.target.id);
-        this.userAnswer = el.dataset.data-answer; 
+        this.userAnswer = el.dataset.answer; 
         
         if (this.userAnswer == this.correctAnswer.name) 
         {
